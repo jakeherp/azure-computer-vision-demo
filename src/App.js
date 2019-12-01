@@ -25,6 +25,8 @@ function App() {
 	})
 
 	useEffect(() => {
+		setAltText("")
+		setAllData({})
 		axios
 			.post(url, data, {
 				headers: {
@@ -38,7 +40,7 @@ function App() {
 				setAltText(capitalize(res.data.description.captions[0].text))
 			})
 			.catch(function(error) {
-				console.log(error)
+				setAltText("Not found")
 			})
 	}, [input])
 
@@ -54,13 +56,15 @@ function App() {
 			{altText.length > 0 ? (
 				<>
 					<h1>{altText}</h1>
-					<p>
-						Confidence:{" "}
-						{(
-							allData.description.captions[0].confidence * 100
-						).toFixed(2)}
-						%
-					</p>
+					{allData.description.length && (
+						<p>
+							Confidence:{" "}
+							{(
+								allData.description.captions[0].confidence * 100
+							).toFixed(2)}
+							%
+						</p>
+					)}
 				</>
 			) : (
 				<h1>Loading alt text ...</h1>
@@ -70,7 +74,7 @@ function App() {
 				alt={altText}
 				style={{ maxWidth: "50%", margin: "0 auto" }}
 			/>
-			{altText.length > 0 && (
+			{altText.length > 0 && altText !== "Not found" && (
 				<pre
 					style={{
 						background: "#eee",
